@@ -1,0 +1,177 @@
+
+DROP TABLE IF EXISTS student;
+CREATE TABLE student (
+	student_id integer NOT NULL,
+	name varchar(10) NOT NULL,
+	year smallint default 1,
+	dept_no int NOT NULL,
+	major varchar(20) NULL,
+	PRIMARY KEY (`student_id`)
+);
+
+DROP TABLE IF EXISTS department;
+CREATE TABLE department (
+	dept_no integer AUTO_INCREMENT,
+	dept_name varchar(20) NOT NULL,
+	office varchar(20) NOT NULL,
+	office_tel varchar(13) NULL,
+	PRIMARY KEY (`dept_no`)
+);
+
+ALTER TABLE student CHANGE COLUMN major major varchar(40);
+ALTER TABLE student ADD COLUMN gender varchar;
+
+ALTER TABLE department CHANGE COLUMN dept_name dept_name varchar(40);
+ALTER TABLE department CHANGE COLUMN office office varchar(30);
+
+INSERT INTO student VALUES 
+(20070002, 'James Bond', 3, 4, 'Business Administration'),
+(20060001, 'Queenie', 4, 4, 'Business Administration'),
+(20030001, 'Reonardo', 4, 2, 'Electronic Engineering'),
+(20040003, 'Julia', 3, 2, 'Electronic Engineering'),
+(20060002, 'Roosevelt', 3, 1, 'Computer Science'),
+(20100002, 'Fearne', 3, 4, 'Business Administration'),
+(20110001, 'Chloe', 2, 1, 'Computer Science'),
+(20080003, 'Amy', 4, 3, 'Law'),
+(20040002, 'Selina', 4, 5, 'English Literature'),
+(20070001, 'Ellen', 4, 4, 'Business Administration'),
+(20100001, 'Kathy', 3, 4, 'Business Administration'),
+(20110002, 'Lucy', 2, 2, 'Electronic Engineering'),
+(20030002, 'Michelle', 5, 1, 'Computer Science'),
+(20070003, 'April', 4, 3, 'Law'),
+(20070005, 'Alicia', 2, 5, 'English Literature'),
+(20100003, 'Yullia', 3, 1, 'Computer Science'),
+(20070007, 'Ashlee', 2, 4, 'Business Administration');
+
+INSERT INTO department (dept_name, office, office_tel) VALUES
+dept_no = 1, ('Computer Science', 'Engineering building', '02-3290-0123'),
+dept_no = 2, ('Electronic Engineering', 'Engineering building','02-3290-2345'),
+dept_no = 3, ('Law', 'Law building', '02-3290-7896'),
+dept_no = 4, ('Business Administration', 'Administration building','02-3290-1112'),
+('English Literature', 'Literature building', '02-3290-4412');
+
+UPDATE department
+SET dept_name = "Electronic and Electrical Engineering"
+WHERE dept_name = "Electronic Engineering";
+
+UPDATE student
+SET major = "Electronic and Electrical Engineering"
+WHERE major = "Electronic Engineering";
+
+INSERT INTO department VALUES
+("Education", "Education Building","02-3290-2347");
+
+UPDATE student
+SET major = "Education"name = "Chloe"
+WHERE name = "Chloe";
+
+DELETE FROM student
+WHERE name = "Michelle";
+
+DELETE FROM student
+WHERE name = "Fearne";
+
+SELECT name
+FROM student
+WHERE dept_name = "Computer Science";
+
+SELECT student_id, year, major
+FROM student;
+
+SELECT name
+FROM student
+WHERE year = 3;
+
+SELECT name
+FROM student
+WHERE year < 3;
+
+SELECT name
+FROM student
+JOIN department de ON dept_no = de.dept_no
+WHERE dept_name = "Business Administration";
+
+SELECT name
+FROM student
+WHERE student_id like '2007%';
+
+SELECT name
+FROM student
+ORDER BY student_id;
+
+SELECT major
+FROM student
+GROUP BY major
+HAVING avg(year) >3 ;
+
+SELECT name
+FROM student
+WHERE (major = 'Business Administration') and student_id like '2007%'
+Limit 2;
+
+-------ex6---------
+SELECT r.role
+FROM roles r
+JOIN movies m ON r.movie_id = m.id
+WHERE m.name = "Pi";
+
+SELECT a.first_name, a.last_name
+FROM actors a
+JOIN roles r ON a.id = r.actor_id
+JOIN movies m ON r.movie_id = m.id
+WHERE m.name = "Pi";
+
+SELECT a.first_name, a.last_name
+FROM actors a
+JOIN roles r ON a.id = r.actor_id
+JOIN movies m ON r.movie_id = m.id
+WHERE ((m.name = 'Kill Bill: Vol. 2') and (m.name = 'Kill Bill: Vol. 2'));
+ 
+
+SELECT a.first_name, a.last_name
+FROM actors a
+JOIN roles r ON a.id = r.actor_id
+JOIN movies m ON r.movie_id = m.id
+GROUP BY a.id
+ORDER BY count(m.id) DESC
+LIMIT 7;
+
+SELECT mg.genre
+FROM movies_genres mg
+JOIN movies m ON mg.movie_id = m.id
+GROUP BY mg.genre
+ORDER BY count(m.id) DESC
+LIMIT 3;
+
+SELECT d.first_name, d.last_name
+FROM directors d
+JOIN movies_directors md ON d.id = md.director_id
+JOIN movies_genres mg ON md.movie_id = mg.movie_id
+GROUP BY mg.genre
+HAVING mg.genre = "Thriller"
+ORDER BY count(d.id) DESC
+LIMIT 1;
+
+-------ex7---------
+SELECT g.grade 
+FROM grades g
+JOIN courses c ON g.course_id = c.id
+WHERE c.name = "Computer Science 143";
+
+SELECT s.name
+FROM students s
+JOIN grades g ON s.id = g.student_id
+JOIN courses c ON g.course_id = c.id
+WHERE (c.name = "Computer Science 143") and ((g.grade = "B-") or (g.grade = "B") or (g.grade = "B+") or (g.grade = "A-") or (g.grade = "A") or (g.grade = "A+")) ;
+
+SELECT s.name, g.course_id, g.grade
+FROM students s
+JOIN grades g ON s.id = g.student_id
+JOIN courses c ON g.course_id = c.id
+WHERE (g.grade = "B-") or (g.grade = "B") or (g.grade = "B+") or (g.grade = "A-") or (g.grade = "A") or (g.grade = "A+")
+ORDER BY c.name, g.grade;
+
+SELECT c.name
+FROM courses c
+JOIN grades g ON c.id = g.course_id
+WHERE count(g.student_id) >= 2
